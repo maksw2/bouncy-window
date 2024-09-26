@@ -49,7 +49,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
         hFont = CreateFont(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
             DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-            CLEARTYPE_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Segoe UI");
+            CLEARTYPE_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Consolas");
 
         SystemParametersInfoW(SPI_GETWORKAREA, 0, &workArea, 0);
         int screenHeight2 = GetSystemMetrics(SM_CYSCREEN);
@@ -308,7 +308,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR pCmdLine, int nCmdSho
         L"Bouncing Window Class",             // Nazwa klasy okna
         L"Bouncy window",                     // Tytuł okna
         WS_OVERLAPPEDWINDOW,                  // Styl okna
-        CW_USEDEFAULT, CW_USEDEFAULT, 500, 250, // Rozmiar i pozycja
+        CW_USEDEFAULT, CW_USEDEFAULT, 680, 230, // Rozmiar i pozycja
         NULL,                                 // Uchwyt okna nadrzędnego
         NULL,                                 // Uchwyt menu
         hInstance,                            // Uchwyt instancji aplikacji
