@@ -82,9 +82,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         // Insert the new item before "Close"
         InsertMenu(hSysMenu, closePos, MF_BYPOSITION | MF_STRING, MENU_ITEM_ID, L"Help");
         InsertMenu(hSysMenu, closePos + 1, MF_BYPOSITION | MF_STRING, MENU_ITEM_ID_THEME, L"Dark theme");
-
-        //DWORD value = TRUE;
-        //DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &value, sizeof(value));
         break;
     }
 
