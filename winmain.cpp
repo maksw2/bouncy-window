@@ -76,7 +76,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         // Find the position of the "Close" item
         int closePos = GetMenuItemCount(hSysMenu) - 1; // Assuming "Close" is the last item
         // Insert the new item before "Close"
-        InsertMenu(hSysMenu, closePos, MF_BYPOSITION | MF_STRING, MENU_ITEM_ID, L"My New Option");
+        InsertMenu(hSysMenu, closePos, MF_BYPOSITION | MF_STRING, MENU_ITEM_ID, L"Help");
         break;
     }
 
