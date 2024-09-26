@@ -1,5 +1,7 @@
 ﻿#include <windows.h>
+#include <dwmapi.h>
 #include <stdio.h>
+#include "resource.h"
 
 // Define constants and macros
 #define GET_X_LPARAM(lp) ((int)(short)LOWORD(lp))
@@ -47,7 +49,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         hbmMem = CreateCompatibleBitmap(GetDC(hwnd), ps.rcPaint.right, ps.rcPaint.bottom);
         SelectObject(hdcMem, hbmMem);
 
-        hFont = CreateFont(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+        hFont = CreateFontW(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
             DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
             CLEARTYPE_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Consolas");
 
@@ -77,6 +79,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         int closePos = GetMenuItemCount(hSysMenu) - 1; // Assuming "Close" is the last item
         // Insert the new item before "Close"
         InsertMenu(hSysMenu, closePos, MF_BYPOSITION | MF_STRING, MENU_ITEM_ID, L"Help");
+        DWORD value = TRUE;
+        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &value, sizeof(value));
         break;
     }
 
@@ -258,9 +262,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         swprintf_s(buffer7, L"workArea.bottom - windowHeight: %d, rect.right: %d, rect.left: %d\n", workArea.bottom - windowHeight, rect.right, rect.left);
         swprintf_s(buffer8, L"screenWidth - windowWidth + 7: %d\n", screenWidth - windowWidth + 7);
 
-        FillRect(hdcMem, &clientRect, (HBRUSH)(COLOR_WINDOW + 1));
+        FillRect(hdcMem, &clientRect, (HBRUSH)(COLOR_WINDOW + 5));
         SelectObject(hdcMem, hFont);
-        SetBkMode(hdcMem, OPAQUE);
+        SetBkMode(hdcMem, TRANSPARENT);
+        SetTextColor(hdcMem, RGB(255, 255, 255));
 
         TextOut(hdcMem, 10, 10, buffer1, (INT)wcslen(buffer1));
         TextOut(hdcMem, 10, 30, buffer2, (INT)wcslen(buffer2));
@@ -298,14 +303,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR pCmdLine, int nCmdSho
 
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = hInstance;
-    wc.lpszClassName = L"Bouncing Window Class";
+    wc.lpszClassName = L"BouncingWindowClass";
 
     RegisterClass(&wc);
 
     // Create window
     HWND hwnd = CreateWindowExW(
         0,                                    // Opcjonalne style okna
-        L"Bouncing Window Class",             // Nazwa klasy okna
+        L"BouncingWindowClass",             // Nazwa klasy okna
         L"Bouncy window",                     // Tytuł okna
         WS_OVERLAPPEDWINDOW,                  // Styl okna
         CW_USEDEFAULT, CW_USEDEFAULT, 680, 230, // Rozmiar i pozycja
@@ -317,6 +322,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR pCmdLine, int nCmdSho
 
     if (hwnd == NULL) {
         return 0;
+    }
+
+    HICON hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
+    if (hIcon)
+    {
+        SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
     }
 
     ShowWindow(hwnd, nCmdShow);
