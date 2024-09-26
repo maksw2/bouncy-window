@@ -262,7 +262,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         swprintf_s(buffer7, L"workArea.bottom - windowHeight: %d, rect.right: %d, rect.left: %d\n", workArea.bottom - windowHeight, rect.right, rect.left);
         swprintf_s(buffer8, L"screenWidth - windowWidth + 7: %d\n", screenWidth - windowWidth + 7);
 
-        FillRect(hdcMem, &clientRect, (HBRUSH)(COLOR_WINDOW + 5));
+        FillRect(hdcMem, &clientRect, (HBRUSH)(COLOR_WINDOW + 3));
         SelectObject(hdcMem, hFont);
         SetBkMode(hdcMem, TRANSPARENT);
         SetTextColor(hdcMem, RGB(255, 255, 255));
