@@ -7,42 +7,42 @@
 #define GET_X_LPARAM(lp) ((int)(short)LOWORD(lp))
 #define GET_Y_LPARAM(lp) ((int)(short)HIWORD(lp))
 #define TIMER_ID_MAIN 1
+#define TIMER_INTERVAL_MAIN 10
 #define TIMER_ID_SPEED_CALC 2
+#define TIMER_INTERVAL_SPEED_CALC 30
 #define MENU_ITEM_ID 1000
 #define MENU_ITEM_ID_THEME 1001
 
-// Global Variables
-static double yPos = 0;
-static double xPos = 0;
-static double velocityY = 0;
-static double velocityX = 0;
-static const double gravity = 0.90;
-static const double friction = 0.90;
-static const double drag = 0.99;
-static const double bounceFactor = -0.75;
-static bool isDragging = false;
-static bool isGroundLevel = false;
-static RECT workArea;
-static int taskbarHeight;
-static int windowHeight;
-static int windowWidth;
-static int screenHeight;
-static int screenWidth;
-static int titlebarHeight;
-static double speedX = 0.0;
-static double speedY = 0.0;
-static DWORD prevTime = 0;
-static POINT prevPos;
-static HDC hdcMem = NULL;
-static HBITMAP hbmMem = NULL;
-static HFONT hFont = NULL;
-static PAINTSTRUCT ps;
-static RECT rect;
-static HMENU hSysMenu;
-static bool darkMode;
-
 // Window Procedure function
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    static double yPos = 0;
+    static double xPos = 0;
+    static double velocityY = 0;
+    static double velocityX = 0;
+    static const double gravity = 0.90;
+    static const double friction = 0.90;
+    static const double drag = 0.99;
+    static const double bounceFactor = -0.75;
+    static bool isDragging = false;
+    static bool isGroundLevel = false;
+    static RECT workArea;
+    static int taskbarHeight;
+    static int windowHeight;
+    static int windowWidth;
+    static int screenHeight;
+    static int screenWidth;
+    static int titlebarHeight;
+    static double speedX = 0.0;
+    static double speedY = 0.0;
+    static DWORD prevTime = 0;
+    static POINT prevPos;
+    static HDC hdcMem = NULL;
+    static HBITMAP hbmMem = NULL;
+    static HFONT hFont = NULL;
+    static PAINTSTRUCT ps;
+    static RECT rect;
+    static HMENU hSysMenu;
+    static bool darkMode;
     switch (uMsg) {
     case WM_CREATE: {
         // Initialize variables and settings on window creation
@@ -72,8 +72,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         screenWidth = GetSystemMetrics(SM_CXVIRTUALSCREEN);
         screenHeight = GetSystemMetrics(SM_CYVIRTUALSCREEN);
 
-        SetTimer(hwnd, TIMER_ID_MAIN, 10, NULL);
-        SetTimer(hwnd, TIMER_ID_SPEED_CALC, 30, NULL);
+        SetTimer(hwnd, TIMER_ID_MAIN, TIMER_INTERVAL_MAIN, NULL);
+        SetTimer(hwnd, TIMER_ID_SPEED_CALC, TIMER_INTERVAL_SPEED_CALC, NULL);
 
         // Add the new menu item when the window is created
         HMENU hSysMenu = GetSystemMenu(hwnd, FALSE);
@@ -199,7 +199,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             yPos = currentPosition.top;
             xPos = currentPosition.left;
             velocityY = 0;
-            SetTimer(hwnd, TIMER_ID_MAIN, 10, NULL);
+            SetTimer(hwnd, TIMER_ID_MAIN, TIMER_INTERVAL_MAIN, NULL);
 
             velocityX = speedX / 100;
             velocityY = speedY / 100;
@@ -226,7 +226,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         {
             KillTimer(hwnd, TIMER_ID_MAIN);
             MessageBoxW(hwnd, L"Bouncing window:\nYou can drop the window,\nThrow the window,\nAnd have fun!\nIf the window starts being laggy restart the app.\nhttps://github.com/maksw2/bouncy-window", L"Help", MB_OK);
-            SetTimer(hwnd, TIMER_ID_MAIN, 10, NULL);
+            SetTimer(hwnd, TIMER_ID_MAIN, TIMER_INTERVAL_MAIN, NULL);
         }
         else if (wParam == MENU_ITEM_ID_THEME)
         {
