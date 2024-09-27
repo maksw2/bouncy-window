@@ -1,4 +1,5 @@
 name: MSBuild
+
 # We only test x64 since if it will compile it means the rest will compile
 
 on:
@@ -16,7 +17,7 @@ env:
   BUILD_CONFIGURATION: Release
 
 permissions:
-  contents: read
+  contents: write  # Need write permissions to create releases
 
 jobs:
   build:
@@ -34,6 +35,40 @@ jobs:
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
 
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # This token is provided by Actions, you do not need to create your own
+      with:
+        tag_name: ${{ github.sha }}  # Or use a more meaningful tag if you have one
+        release_name: Release ${{ github.sha }}
+        body: |
+          Automated Release from GitHub Actions
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset - bounce.exe
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: .\x64\Release\bounce.exe
+        asset_name: bounce.exe
+        asset_content_type: application/vnd.microsoft.portable-executable
+
+    - name: Upload Release Asset - bounce.pdb
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: .\x64\Release\bounce.pdb
+        asset_name: bounce.pdb
+        asset_content_type: application/octet-stream  # Or a more specific type if known
+
+    # The Upload artifact step remains unchanged, keeping it for reference or if you still need the artifact for other purposes
     - name: Upload artifact
       uses: actions/upload-artifact@v4.4.0
       with:
@@ -45,4 +80,3 @@ jobs:
         retention-days: 15
         compression-level: 0
         overwrite: true
-        
