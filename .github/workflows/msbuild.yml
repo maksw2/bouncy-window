@@ -42,7 +42,7 @@ jobs:
       id: signtool
 
     - name: Sign Executable
-      run: $env:SIGNTOOL_DIR sign /f "cert.pfx" /p ${{ secrets.SIGNING_CERTIFICATE_PASSWORD }} /t "http://timestamp.comodoca.com/authenticode" /d "Bouncy window" /du "https://github.com/maksw2/bouncy-window" /fd sha256 ".\x64\Release\bounce.exe"
+      run: "$env:SIGNTOOL_DIR" sign /f "cert.pfx" /p ${{ secrets.SIGNING_CERTIFICATE_PASSWORD }} /t "http://timestamp.comodoca.com/authenticode" /d "Bouncy window" /du "https://github.com/maksw2/bouncy-window" /fd sha256 ".\x64\Release\bounce.exe"
       env:
           SIGNTOOL_DIR: ${{ steps.signtool.outputs.signtool-x64 }}
 
