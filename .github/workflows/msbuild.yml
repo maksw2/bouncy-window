@@ -49,8 +49,12 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
       with:
-        tag_name: release-${{ github.sha }}
-        release_name: Release ${{ github.sha }}
+        tag_name: release-${{ github.sha }}  # Use the full SHA
+        release_name: Release ${{ github.event.head_commit.short_sha }}  # Use the short SHA here
+        body: |
+          Automated Release from GitHub Actions
+        draft: false
+        prerelease: false
 
     - name: Upload Release Asset - bounce.exe
       uses: actions/upload-release-asset@v1
