@@ -31,7 +31,7 @@ static int screenWidth;
 static int titlebarHeight;
 static double speedX = 0.0;
 static double speedY = 0.0;
-static DWORD prevTime2 = 0;
+static DWORD prevTime = 0;
 static POINT prevPos;
 static HDC hdcMem = NULL;
 static HBITMAP hbmMem = NULL;
@@ -98,8 +98,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             GetCursorPos(&currentPos);
             ScreenToClient(hwnd, &currentPos);
 
-            if (prevTime2 != 0) {
-                DWORD timeDiff = currentTime - prevTime2;
+            if (prevTime != 0) {
+                DWORD timeDiff = currentTime - prevTime;
                 int deltaX = currentPos.x - prevPos.x;
                 int deltaY = currentPos.y - prevPos.y;
 
@@ -107,7 +107,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 speedY = (double)deltaY / (timeDiff / 1000.0);
             }
 
-            prevTime2 = currentTime;
+            prevTime = currentTime;
             prevPos = currentPos;
             
             InvalidateRect(hwnd, NULL, TRUE);
@@ -123,8 +123,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             RECT windowRect2;
             GetWindowRect(hwnd, &windowRect2);
 
-            if (prevTime2 != 0) {
-                DWORD timeDiff = currentTime2 - prevTime2;
+            if (prevTime != 0) {
+                DWORD timeDiff = currentTime2 - prevTime;
                 int deltaX = windowRect2.left - prevPos.x;
                 int deltaY = windowRect2.top - prevPos.y;
 
@@ -132,7 +132,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 speedY = (double)deltaY / (timeDiff / 1000.0);
             }
 
-            prevTime2 = currentTime2;
+            prevTime = currentTime2;
             prevPos.x = windowRect2.left;
             prevPos.y = windowRect2.top;
         }
