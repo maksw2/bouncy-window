@@ -38,13 +38,10 @@ jobs:
     - name: Download Certificate
       run: Invoke-WebRequest -Uri ${{ secrets.CERTIFICATE_URL }} -OutFile "cert.pfx"
 
-    - uses: KamaranL/add-signtool-action@v1
-      id: signtool
+    - uses: ilammy/msvc-dev-cmd@v1
 
     - name: Sign Executable
-      run: "$env:SIGNTOOL_DIR" sign /f "cert.pfx" /p ${{ secrets.SIGNING_CERTIFICATE_PASSWORD }} /t "http://timestamp.comodoca.com/authenticode" /d "Bouncy window" /du "https://github.com/maksw2/bouncy-window" /fd sha256 ".\x64\Release\bounce.exe"
-      env:
-          SIGNTOOL_DIR: ${{ steps.signtool.outputs.signtool-x64 }}
+      run: signtool sign /f "cert.pfx" /p ${{ secrets.SIGNING_CERTIFICATE_PASSWORD }} /t "http://timestamp.comodoca.com/authenticode" /d "Bouncy window" /du "https://github.com/maksw2/bouncy-window" /fd sha256 ".\x64\Release\bounce.exe"
 
     - name: Create Release
       id: create_release
