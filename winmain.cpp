@@ -53,7 +53,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
         hFont = CreateFontW(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
             DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-            CLEARTYPE_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Consolas");
+            CLEARTYPE_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Segoe UI");
 
         SystemParametersInfoW(SPI_GETWORKAREA, 0, &workArea, 0);
         int screenHeight2 = GetSystemMetrics(SM_CYSCREEN);
@@ -208,11 +208,13 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         break;
 
     case WM_SIZE: {
+        DeleteObject(hbmMem);
         GetClientRect(hwnd, &ps.rcPaint);
         DeleteObject(hbmMem);
         hbmMem = CreateCompatibleBitmap(GetDC(hwnd), ps.rcPaint.right, ps.rcPaint.bottom);
         SelectObject(hdcMem, hbmMem);
         // memory leak my beloved
+        // somehow the old one isn't deleted, uses more and more memory and lags the timer
 
         GetWindowRect(hwnd, &rect);
         windowHeight = rect.bottom - rect.top;
@@ -317,7 +319,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     return 0;
 }
 
-// Main function
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR pCmdLine, int nCmdShow) {
     WNDCLASS wc = { };
 
@@ -329,15 +330,15 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR pCmdLine, int nCmdSho
 
     // Create window
     HWND hwnd = CreateWindowExW(
-        0,                                    // Opcjonalne style okna
-        L"BouncingWindowClass",             // Nazwa klasy okna
-        L"Bouncy window",                     // Tytuł okna
-        WS_OVERLAPPEDWINDOW,                  // Styl okna
-        CW_USEDEFAULT, CW_USEDEFAULT, 680, 230, // Rozmiar i pozycja
-        NULL,                                 // Uchwyt okna nadrzędnego
-        NULL,                                 // Uchwyt menu
-        hInstance,                            // Uchwyt instancji aplikacji
-        NULL                                  // Dodatkowe dane okna
+        0,
+        L"BouncingWindowClass",
+        L"Bouncy window",
+        WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, CW_USEDEFAULT, 500, 230,
+        NULL,
+        NULL,
+        hInstance,
+        NULL
     );
 
     if (hwnd == NULL) {

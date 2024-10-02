@@ -140,9 +140,6 @@
       <AdditionalLibraryDirectories>D:\vs2022\VC\Tools\MSVC\14.41.34120\lib\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.22621.0\um\x64</AdditionalLibraryDirectories>
       <AdditionalDependencies>winmm.lib;dwmapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>echo Signing executable... &amp; "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\signtool.exe" sign /f "C:\mypfx.pfx" /p 123 /t "http://timestamp.comodoca.com/authenticode" /d "Bouncy window" /du "https://maksw.pl/projekty/bouncy-window" /fd sha256 "C:\Users\maksw\source\repos\bounce\x64\Debug\bounce.exe"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
