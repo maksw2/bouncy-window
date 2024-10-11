@@ -1,7 +1,6 @@
 name: MSBuild
 
 # We only test x64 since if it will compile it means the rest will compile
-
 on:
   push:
   pull_request:
@@ -34,15 +33,7 @@ jobs:
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
-
-    - name: Download Certificate
-      run: Invoke-WebRequest -Uri ${{ secrets.CERTIFICATE_URL }} -OutFile "cert.pfx"
-
-    - uses: ilammy/msvc-dev-cmd@v1
-
-    - name: Sign Executable
-      run: signtool sign /f "cert.pfx" /p ${{ secrets.SIGNING_CERTIFICATE_PASSWORD }} /t "http://timestamp.comodoca.com/authenticode" /d "Bouncy window" /du "https://github.com/maksw2/bouncy-window" /fd sha256 ".\x64\Release\bounce.exe"
-
+      
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
