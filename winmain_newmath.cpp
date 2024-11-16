@@ -1,4 +1,37 @@
-﻿#include <Windows.h>
+﻿// this file contains more correct and expensive math
+#include <Windows.h>
+
+double normalize(double value, double min, double max) {
+    if (min == max) {
+        return 0.5; // Handle the case where min and max are equal
+    }
+    return (value - min) / (max - min);
+}
+
+double clamp(double value, double min, double max) {
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
+}
+
+double approximateSqrt(double value) {
+    if (value <= 0) return 0;
+    double guess = value / 2.0;
+    for (int i = 0; i < 10; ++i) { // Perform a few iterations for a closer approximation
+        guess = (guess + value / guess) / 2.0;
+    }
+    return guess;
+}
+
+double calculateVelocityMagnitude(double velocityX, double velocityY) {
+    return approximateSqrt(velocityX * velocityX + velocityY * velocityY);
+}
+
+double calculateDragCoefficient(double velocityMagnitude) {
+    double maxVelocity = 100.0; // Define an upper threshold for max velocity
+    double drag = velocityMagnitude / maxVelocity; // Normalize to a 0-1 range
+    return clamp(drag, 0.0, 1.0); // Ensure drag remains within [0, 1]
+}
 
 double invert_double(double value) {
     // Ensure the value is within the specified range (0 to 1)
@@ -23,7 +56,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     static double velocityX = 0;
     static const double gravity = 0.98;
     static const double friction = 0.90;
-    static const double drag = 0.05;
+    static double drag;
     static const double bounceFactor = 0.65;
     static bool isDragging = false;
     static bool isGroundLevel = false;
@@ -110,6 +143,9 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         }
 
         if (!isDragging && wParam == TIMER_ID_UPDATE) {
+            double velocityMagnitude = calculateVelocityMagnitude(velocityX, velocityY);
+            drag = calculateDragCoefficient(velocityMagnitude);
+
             if (velocityY > 100) velocityY = 100;
             if (velocityX > 100) velocityX = 100;
             velocityY += gravity;
