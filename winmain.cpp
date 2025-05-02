@@ -1,4 +1,5 @@
 ﻿#include <Windows.h>
+#define PHYSICS
 
 double invert_double(double value) {
     // Ensure the value is within the specified range (0 to 1)
@@ -7,6 +8,70 @@ double invert_double(double value) {
     }
 
     return 1.0 - value;
+}
+
+double normalize(double value, double min, double max) {
+    if (min == max) {
+        return 0.5; // Handle the case where min and max are equal
+    }
+    return (value - min) / (max - min);
+}
+
+double clamp(double value, double min, double max) {
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
+}
+
+double approximateSqrt(double value) {
+    if (value <= 0) return 0;
+    double guess = value / 2.0;
+    for (int i = 0; i < 6; ++i) { // Perform a few iterations for a closer approximation
+        guess = (guess + value / guess) / 2.0;
+    }
+    return guess;
+}
+
+float fastSqrt(float number) {
+    long i;
+    float x2, y;
+    constexpr float threehalfs = 1.5F;
+
+    x2 = number * 0.5F;
+    y = number;
+    i = *(long*)&y;                      // Evil bit-level floating-point hack
+    i = 0x5f3759df - (i >> 1);           // Initial magic number guess
+    y = *(float*)&i;
+    y = y * (threehalfs - (x2 * y * y)); // First Newton-Raphson iteration
+
+    // Approximation for square root
+    y = number * y; // Instead of taking the reciprocal, directly get the square root
+
+    return y;
+}
+
+double calculateVelocityMagnitude(double velocityX, double velocityY) {
+    return fastSqrt(
+        static_cast<float>(velocityX) *
+        static_cast<float>(velocityX) +
+        static_cast<float>(velocityY) *
+        static_cast<float>(velocityY));
+}
+
+double calculateDragCoefficient(double velocityMagnitude) {
+    constexpr double maxVelocity = 1000.0; // Define an upper threshold for max velocity
+    double drag = velocityMagnitude / maxVelocity; // Normalize to a 0-1 range
+    return clamp(drag, 0.0, 1.0); // Ensure drag remains within [0, 1]
+}
+
+double getDrag(const double& velocityX, const double& velocityY) {
+#ifdef PHYSICS
+    double velocityMagnitude = calculateVelocityMagnitude(velocityX, velocityY);
+    double dragCoefficient = calculateDragCoefficient(velocityMagnitude);
+    return 0.1 + dragCoefficient * 0.9; // Add a base drag value for smoother dynamics
+#else
+    return 0.05;
+#endif
 }
 
 // Define constants and macros
@@ -23,7 +88,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     static double velocityX = 0;
     static const double gravity = 0.98;
     static const double friction = 0.90;
-    static const double drag = 0.05;
+    double drag;
     static const double bounceFactor = 0.65;
     static bool isDragging = false;
     static bool isGroundLevel = false;
@@ -110,6 +175,8 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         }
 
         if (!isDragging && wParam == TIMER_ID_UPDATE) {
+            drag = getDrag(velocityX, velocityY);
+
             if (velocityY > 100) velocityY = 100;
             if (velocityX > 100) velocityX = 100;
             velocityY += gravity;
