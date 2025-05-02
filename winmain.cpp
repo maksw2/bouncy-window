@@ -194,7 +194,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 isGroundLevel = false;
             }
 
-            if (isGroundLevel) velocityX *= friction * invert_double(drag * 0.05);
+            if (isGroundLevel) velocityX *= friction * invert_double(drag * 0.001);
             else velocityX *= invert_double(drag);
             velocityY *= invert_double(drag * 0.1);
             // When in air only account for air drag
