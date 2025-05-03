@@ -41,11 +41,10 @@ jobs:
 
     - name: Upload Release Asset - bounce.exe
       uses: softprops/action-gh-release@v2
-      if: github.ref_type == 'tag'
       with:
         files: |
-          .\x64\Release\bounce.exe
-          .\x64\Release\bounce.pdb
+          .\bin\Release\bounce.exe
+          .\bin\Release\bounce.pdb
         token: ${{ secrets.GITHUB_TOKEN }}
         prerelease: true
         preserve_order: true
@@ -56,8 +55,8 @@ jobs:
       with:
         name: x64_Release
         path: |
-          .\x64\Release\bounce.exe
-          .\x64\Release\bounce.pdb
+          .\bin\Release\bounce.exe
+          .\bin\Release\bounce.pdb
         if-no-files-found: 'error'
         retention-days: 15
         compression-level: 0
