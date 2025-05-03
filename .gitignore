@@ -1,6 +1,3 @@
-x64/
-x86/
-.vs/
-icon.aps
-bounce.vcxproj.user
-bounce.vcxproj.filters
+﻿.vs/
+bin/
+obj/

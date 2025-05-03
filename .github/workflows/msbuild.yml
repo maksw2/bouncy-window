@@ -8,7 +8,7 @@ on:
 
 env:
   # Path to the solution file relative to the root of the project.
-  SOLUTION_FILE_PATH: .\bounce.sln
+  SOLUTION_FILE_PATH: .\bounce2.sln
 
   # Configuration type to build.
   # You can convert this to a build matrix if you need coverage of multiple configuration types.
@@ -34,42 +34,25 @@ jobs:
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
       
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-      with:
-        tag_name: release-${{ github.sha }}  # Use the full SHA
-        release_name: Release ${{ github.event.head_commit.short_sha }}  # Use the short SHA here
-        body: |
-          Automated Release from GitHub Actions
-        draft: false
-        prerelease: false
+    - name: Get Short Commit Hash
+      id: short_sha
+      shell: pwsh
+      run: echo "sha_short=$(${env:GITHUB_SHA}.Substring(0,7))" | Out-File -FilePath $env:GITHUB_ENV -Append
 
     - name: Upload Release Asset - bounce.exe
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v2
+      if: github.ref_type == 'tag'
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: .\x64\Release\bounce.exe
-        asset_name: bounce.exe
-        asset_content_type: application/vnd.microsoft.portable-executable
+        files: |
+          .\x64\Release\bounce.exe
+          .\x64\Release\bounce.pdb
+        token: ${{ secrets.GITHUB_TOKEN }}
+        prerelease: true
+        preserve_order: true
+        name: Automatic release ${{ env.sha_short }}
 
-    - name: Upload Release Asset - bounce.pdb
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: .\x64\Release\bounce.pdb
-        asset_name: bounce.pdb
-        asset_content_type: application/octet-stream  # Or a more specific type if known
-
-    # The Upload artifact step remains unchanged, keeping it for reference or if you still need the artifact for other purposes
     - name: Upload artifact
-      uses: actions/upload-artifact@v4.4.0
+      uses: actions/upload-artifact@v4
       with:
         name: x64_Release
         path: |
