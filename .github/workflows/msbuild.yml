@@ -49,6 +49,7 @@ jobs:
         prerelease: true
         preserve_order: true
         name: Automatic release ${{ env.sha_short }}
+        tag_name: release-${{ env.sha_short }}
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
