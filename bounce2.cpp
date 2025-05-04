@@ -266,7 +266,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         if (wParam == MENU_ITEM_ID_HELP)
         {
             KillTimer(hWnd, TIMER_ID_MAIN);
-            MessageBoxW(hWnd, L"uhh, yeah\nhttps://github.com/maksw2/bouncy-window", L"Help", MB_OK);
+            MessageBoxW(hWnd, L"Drag the title bar to apply velocity and watch it bounce!\n" L"https://github.com/maksw2/bouncy-window", L"Help", MB_OK);
             SetTimer(hWnd, TIMER_ID_MAIN, TIMER_INTERVAL_MAIN, NULL);
         }
         else if (wParam == MENU_ITEM_ID_THEME)
