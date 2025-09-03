@@ -46,8 +46,7 @@ jobs:
           bin/Release/x64/bounce2.exe
           bin/Release/x64/bounce2.pdb
         token: ${{ secrets.GITHUB_TOKEN }}
-        prerelease: true
-        preserve_order: true
+        prerelease: false
         name: Automatic release ${{ env.sha_short }}
         tag_name: release-${{ env.sha_short }}
 
