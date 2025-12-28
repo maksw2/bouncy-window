@@ -1,6 +1,6 @@
 # A window that can bounce around written with win32 in c++
 
-https://github.com/user-attachments/assets/f1edf708-c9aa-4c60-844a-f3d1addce042
+https://github.com/user-attachments/assets/b2ae3688-0e11-4884-86de-e36693328b1a
 
 ## how 2 build
 open bounce2.sln in visual studio 2022
