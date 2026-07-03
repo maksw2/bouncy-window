@@ -18,6 +18,6 @@ A: Yes. That's why it has so many commits.
 
 Q: How does it work?  
 A: Simple, first get the screen dimentions, then the "usable" screen dimentions, subtract one from another and you get the taskbar height.  
-Then, get the virtual screen resolution and check collision against the rect. A simple timer does the job. Leftside collision needs an ofset of 7. God help us.
+Then, get the virtual screen resolution and check collision against the rect. A simple timer does the job. Leftside collision needs an offset of 7. God help us.
 
 ![tenor (4)](https://github.com/user-attachments/assets/27ffa153-483c-4ef6-a8b2-881d845f1484)
